@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const otpverify = require("../models/Otp");
 const jwt = require("jsonwebtoken");
+const cors=require(cors)
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const { body, validationResult } = require("express-validator");
@@ -58,7 +59,7 @@ router.post(
       // creation of user
       User.findOne({ email: req.body.email }, (err, results) => {
         if (err)
-          return res.send({ error: "error in finding user with same email" });
+          return res.send({ error: err});
         if (results) {
           return res.send({ error: "enetered email is already in use" });
         }
