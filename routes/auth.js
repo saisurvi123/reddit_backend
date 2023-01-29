@@ -22,12 +22,12 @@ let transporter = nodemailer.createTransport({
   secure: false,
   auth: {
     user: "survisaikiran79@gmail.com",
-    pass: "cldtfvgetdeokheq",
+    pass: process.env.SMTP_PASSWORD,
   },
 });
 // testing success
 transporter.verify((err, success) => {
-  if (Object.keys(err).length) {
+  if (err && Object.keys(err).length) {
     // console.log("failed to connect transmitter")
     console.log(err);
   } else {
@@ -62,7 +62,7 @@ router.post(
           return res.send({ error: "enetered email is already in use" });
         }
         User.findOne({ username: req.body.username }, (err1, results1) => {
-          if (Object.keys(err1).length)
+          if (err1 && Object.keys(err1).length)
             return res.send({ error: "error in finding user with same email" });
           if (results1) {
             return res.send({ error: "enetered username is already in use" });
@@ -108,7 +108,7 @@ router.post(
     } else {
       // lets
       User.findOne({ username: req.body.username }, (err, results) => {
-        if (Object.keys(err).length) return res.send({ error: "failed to find with username" });
+        if (err && Object.keys(err).length) return res.send({ error: "failed to find with username" });
         if (!results) {
           return res.send({ error: "pls enter valid credentials" });
         } else {
@@ -138,7 +138,7 @@ router.post(
 router.post("/removefollower", fetchuser, (req, res) => {
   // change the following array of user with _id:req.body.id
   User.findById({ _id: req.body.id }, (err, result) => {
-    if (Object.keys(err).length)
+    if (err && Object.keys(err).length)
       return res.send({
         error: "error in finding user by id in removefollower route",
       });
@@ -154,7 +154,7 @@ router.post("/removefollower", fetchuser, (req, res) => {
         { $set: final },
         { new: true },
         (err, result) => {
-          if (Object.keys(err).length)
+          if (err && Object.keys(err).length)
           return res.send({
             error: "error in finding in findingbyIdandupdate",
           });
@@ -169,7 +169,7 @@ router.post("/removefollower", fetchuser, (req, res) => {
     });
     // change the follower array of user with _id:req.user.id
     User.findById({ _id: req.user.id }, (err, result) => {
-      if (Object.keys(err).length)
+      if ( err && Object.keys(err).length)
         return res.send({
           error: "error in finding user by id in removefollower route",
         });
@@ -184,7 +184,7 @@ router.post("/removefollower", fetchuser, (req, res) => {
           { $set: final },
           { new: true },
           (err, result) => {
-            if (Object.keys(err).length)
+            if (err &&  Object.keys(err).length)
             return res.send({
               error: "error in finding in findingbyIdandupdate",
             });
@@ -205,7 +205,7 @@ router.post("/removefollower", fetchuser, (req, res) => {
   router.post("/removefollowing", fetchuser, (req, res) => {
     // change the following array of user with _id:req.body.id
     User.findById({ _id: req.body.id }, (err, result) => {
-      if (Object.keys(err).length)
+      if (err &&  Object.keys(err).length)
         return res.send({
           error: "error in finding user by id in removefollower route",
         });
@@ -221,7 +221,7 @@ router.post("/removefollower", fetchuser, (req, res) => {
           { $set: final },
           { new: true },
           (err, result) => {
-            if (Object.keys(err).length)
+            if (err &&  Object.keys(err).length)
             return res.send({
               error: "error in finding in findingbyIdandupdate",
             });
@@ -236,7 +236,7 @@ router.post("/removefollower", fetchuser, (req, res) => {
       });
       // change the follower array of user with _id:req.user.id
       User.findById({ _id: req.user.id }, (err, result) => {
-        if (Object.keys(err).length)
+        if (err &&  Object.keys(err).length)
           return res.send({
             error: "error in finding user by id in removefollower route",
           });
@@ -251,7 +251,7 @@ router.post("/removefollower", fetchuser, (req, res) => {
             { $set: final },
             { new: true },
             (err, result) => {
-              if (Object.keys(err).length)
+              if (err &&  Object.keys(err).length)
               return res.send({
                 error: "error in finding in findingbyIdandupdate",
               });
@@ -332,12 +332,12 @@ router.put("/edituser", fetchuser, (req, res) => {
   // if email is gonna update then make sure it is not a duplicate one
   if (email && username) {
     User.findOne({ email: email }, (err, result) => {
-      if (Object.keys(err).length) return res.send({ error: "errror in finding user with email" });
+      if (err &&  Object.keys(err).length) return res.send({ error: "errror in finding user with email" });
       if (result) {
         return res.send({ error: " email already in use" });
       } else {
         User.findOne({ username: username }, (err1, result1) => {
-          if (Object.keys(err1).length)
+          if (err1 &&  Object.keys(err1).length)
             return res.send({ error: "errror in finding user with username" });
           if (result1) return res.send({ error: " username already in use" });
           else {
@@ -358,7 +358,7 @@ router.put("/edituser", fetchuser, (req, res) => {
               { $set: newuserdata },
               { new: true },
               (err, result) => {
-                if (Object.keys(err).length)
+                if (err && Object.keys(err).length)
                   return res.send({
                     error: "error in finding in findingbyIdandupdate",
                   });
@@ -374,7 +374,7 @@ router.put("/edituser", fetchuser, (req, res) => {
     });
   } else if (username) {
     User.findOne({ username: username }, (err1, result1) => {
-      if (Object.keys(err1).length)
+      if (err1 &&  Object.keys(err1).length)
         return res.send({ error: "errror in finding user with username" });
       if (result1) return res.send({ error: " username already in use" });
       else {
@@ -395,7 +395,7 @@ router.put("/edituser", fetchuser, (req, res) => {
           { $set: newuserdata },
           { new: true },
           (err, result) => {
-            if (Object.keys(err).length)
+            if (err &&  Object.keys(err).length)
               return res.send({
                 error: "error in finding in findingbyIdandupdate",
               });
@@ -409,7 +409,7 @@ router.put("/edituser", fetchuser, (req, res) => {
     });
   } else if (email) {
     User.findOne({ email: email }, (err, result) => {
-      if (Object.keys(err).length) return res.send({ error: "errror in finding user with email" });
+      if (err &&  Object.keys(err).length) return res.send({ error: "errror in finding user with email" });
       if (result) {
         return res.send({ error: " email already in use" });
       } else {
@@ -430,7 +430,7 @@ router.put("/edituser", fetchuser, (req, res) => {
           { $set: newuserdata },
           { new: true },
           (err, result) => {
-            if (Object.keys(err).length)
+            if (err && Object.keys(err).length)
               return res.send({
                 error: "error in finding in findingbyIdandupdate",
               });
@@ -460,7 +460,7 @@ router.put("/edituser", fetchuser, (req, res) => {
       { $set: newuserdata },
       { new: true },
       (err, result) => {
-        if (Object.keys(err).length)
+        if (err &&  Object.keys(err).length)
           return res.send({
             error: "error in finding in findingbyIdandupdate",
           });
@@ -477,7 +477,7 @@ router.put("/edituser", fetchuser, (req, res) => {
 // get connected user details based on id
 router.post("/getconnection", (req, res) => {
   User.findById({ _id: req.body.id }, (err, result) => {
-    if (Object.keys(err).length) return res.send({ error: "error in fidning by id" });
+    if (err && Object.keys(err).length) return res.send({ error: "error in fidning by id" });
     else {
       return res.send(result);
     }

@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
 router.post("/createsubgreddit", fetchuser, (req, res) => {
   // check if same name subgreddit exits
   subgreddit.findOne({ name: req.body.name }, (err, results) => {
-    if (Object.keys(err).length) return res.send({ error: "error in finding" });
+    if (err && Object.keys(err).length) return res.send({ error: "error in finding" });
     else if (results) {
       return res.send({ error: "subgreddit exists with same name" });
     } else {
@@ -38,7 +38,7 @@ router.post("/joinrequest", fetchuser, (req, res) => {
   const gredditid = req.body.gredditid;
   const userid = req.user.id;
   User.findById({ _id: userid }, (err, result) => {
-    if (Object.keys(err).length) return res.send({ error: "error in finding findbyid" });
+    if (err && Object.keys(err).length) return res.send({ error: "error in finding findbyid" });
     else if (!result) return res.send({ error: "no such user found" });
     else {
       let newfollowinggreddits = [].concat(result.followinggreddits, {
@@ -54,7 +54,7 @@ router.post("/joinrequest", fetchuser, (req, res) => {
         { $set: newuserdata },
         { new: true },
         (err1, result1) => {
-          if (Object.keys(err1).length)
+          if (err1 && Object.keys(err1).length)
             return res.send({
               error: "error in finding in findingbyIdandupdate",
             });
@@ -66,7 +66,7 @@ router.post("/joinrequest", fetchuser, (req, res) => {
       );
     }
     subgreddit.findById({ _id: gredditid }, (err, result) => {
-      if (Object.keys(err).length) return res.send({ error: "error in finding" });
+      if (err && Object.keys(err).length) return res.send({ error: "error in finding" });
       else if (!result) return res.send({ error: "no such greddit found" });
       else {
         let newfollowers = [].concat(result.followers, {
@@ -81,7 +81,7 @@ router.post("/joinrequest", fetchuser, (req, res) => {
           { $set: newgredditdata },
           { new: true },
           (err1, result1) => {
-            if (Object.keys(err1).length)
+            if (err1 && Object.keys(err1).length)
               return res.send({
                 error: "error in finding in findingbyIdandupdate",
               });
@@ -100,7 +100,7 @@ router.post("/leavegreddit", fetchuser, (req, res) => {
   const gredditid = req.body.gredditid;
   const userid = req.user.id;
   User.findById({ _id: userid }, (err, result) => {
-    if (Object.keys(err).length) return res.send({ error: "error in finding findbyid" });
+    if (err && Object.keys(err).length) return res.send({ error: "error in finding findbyid" });
     else if (!result) return res.send({ error: "no such user found" });
     else {
       let newfollowinggreddits = result.followinggreddits.filter((greddit1) => {
@@ -130,7 +130,7 @@ router.post("/leavegreddit", fetchuser, (req, res) => {
       );
     }
     subgreddit.findById(gredditid, (err, result) => {
-      if (Object.keys(err).length) return res.send({ error: "error in finding" });
+      if (err && Object.keys(err).length) return res.send({ error: "error in finding" });
       else if (!result) return res.send({ error: "no such greddit found" });
       else {
         let newfollowers = result.followers.filter((user1) => {
@@ -150,7 +150,7 @@ router.post("/leavegreddit", fetchuser, (req, res) => {
           { $set: newgredditdata },
           { new: true },
           (err1, result1) => {
-            if (Object.keys(err1).length)
+            if (err1 && Object.keys(err1).length)
               return res.send({
                 error: "error in finding in findingbyIdandupdate",
               });
@@ -168,12 +168,12 @@ router.post("/leavegreddit", fetchuser, (req, res) => {
 router.delete("/deletegreddit/:id", fetchuser, (req, res) => {
   //first check which user is updating the given notes id
   subgreddit.findById({ _id: req.params.id }, (err, result) => {
-    if (Object.keys(err).length) return res.send({error:err});
+    if (err && Object.keys(err).length) return res.send({error:err});
     if (result.user.toString() !== req.user.id) {
       return res.send({ error: "permission rejected" });
     } else {
       subgreddit.findByIdAndDelete({ _id: req.params.id }, (err, result) => {
-        if (Object.keys(err).length) return rs.send({error:err});
+        if (err && Object.keys(err).length) return rs.send({error:err});
         else {
           //   console.log("cool")
           return res.send({ Message: "deletion success" });
@@ -185,7 +185,7 @@ router.delete("/deletegreddit/:id", fetchuser, (req, res) => {
 
 router.get("/fetchallgreddits", (req, res) => {
   subgreddit.find({}, (err, results) => {
-    if (Object.keys(err).length) res.send({ error: "error in fetching all greddits" });
+    if (err && Object.keys(err).length) res.send({ error: "error in fetching all greddits" });
     else {
       return res.send(results);
     }
@@ -194,7 +194,7 @@ router.get("/fetchallgreddits", (req, res) => {
 
 router.post("/getgredditbyid", (req, res) => {
   subgreddit.findById({ _id: req.body.id }, (err, results) => {
-    if (Object.keys(err).length) return res.send({ error: "error in fetching greddit by id" });
+    if (err && Object.keys(err).length) return res.send({ error: "error in fetching greddit by id" });
     else {
       return res.send(results);
     }
@@ -202,7 +202,7 @@ router.post("/getgredditbyid", (req, res) => {
 });
 router.get("/getmygreddits", fetchuser, (req, res) => {
   subgreddit.find({ user: req.user.id }, (err, results) => {
-    if (Object.keys(err).length) return res.send({ error: "error in fetching greddits" });
+    if (err && Object.keys(err).length) return res.send({ error: "error in fetching greddits" });
     else {
       return res.send(results);
     }
@@ -212,11 +212,11 @@ router.get("/getmygreddits", fetchuser, (req, res) => {
 router.post("/getpost", (req, res) => {
   const postid = req.body.postid;
   post.findById({ _id: postid }, (err, result) => {
-    if (Object.keys(err).length) return res.send({ error: "error in findingbyid" });
+    if (err && Object.keys(err).length) return res.send({ error: "error in findingbyid" });
     else if (!result) return res.send({ error: "error" });
     else {
       User.findById({ _id: result.postedby }, (err1, result1) => {
-        if (Object.keys(err1).length) return res.send({ error: "error in finding" });
+        if (err1 && Object.keys(err1).length) return res.send({ error: "error in finding" });
         else {
           let newres = result;
           newres = newres.toJSON();
@@ -238,7 +238,7 @@ router.post("/uploadpost", fetchuser, (req, res) => {
   // assuming same data posts can  exist
 
   subgreddit.findById(gredditid, (err6, resu) => {
-    if (Object.keys(err6).length) return res.send({ error: "error in finding id" });
+    if (err6 && Object.keys(err6).length) return res.send({ error: "error in finding id" });
     else {
       let alert = false;
       for (let i = 0; i < resu.bannedkeywords.length; i++) {
@@ -270,7 +270,7 @@ router.post("/uploadpost", fetchuser, (req, res) => {
       newpost.save().then((results) => {
         // link it with greddit
         subgreddit.findById({ _id: gredditid }, (err, res1) => {
-          if (Object.keys(err).length) return res.send({ error: "error in finding by id" });
+          if (err && Object.keys(err).length) return res.send({ error: "error in finding by id" });
           else if (!res1) {
             return res.send({ error: "no such greddit" });
           } else {
@@ -283,7 +283,7 @@ router.post("/uploadpost", fetchuser, (req, res) => {
               { $set: newgredditdata },
               { new: true },
               (err1, result1) => {
-                if (Object.keys(err1).length)
+                if (err1 && Object.keys(err1).length)
                   return res.send({
                     error: "error in finding in findingbyIdandupdate",
                   });
@@ -307,7 +307,7 @@ router.post("/postcomment", fetchuser, (req, res) => {
   const postid = req.body.postid;
   post.findById({ _id: postid }, (err, result) => {
     User.findById(userid, (err4, result4) => {
-      if (Object.keys(err4).length) return res.send({ error: "error" });
+      if (err4 && Object.keys(err4).length) return res.send({ error: "error" });
       else {
         let newcomments = [].concat(result.comments, {
           username: result4.username,
@@ -322,7 +322,7 @@ router.post("/postcomment", fetchuser, (req, res) => {
           { $set: newpost },
           { new: true },
           (err1, result1) => {
-            if (Object.keys(err1).length)
+            if (err1 && Object.keys(err1).length)
               return res.send({
                 error: "error in finding in findingbyIdandupdate",
               });
@@ -353,7 +353,7 @@ router.post("/likepost", fetchuser, (req, res) => {
         { $set: newpost },
         { new: true },
         (err1, result1) => {
-          if (Object.keys(err1).length)
+          if (err1 && Object.keys(err1).length)
             return res.send({
               error: "error in finding in findingbyIdandupdate",
             });
@@ -380,7 +380,7 @@ router.post("/removelikepost", fetchuser, (req, res) => {
       { $set: newpost },
       { new: true },
       (err1, result1) => {
-        if (Object.keys(err1).length)
+        if (err1 && Object.keys(err1).length)
           return res.send({
             error: "error in finding in findingbyIdandupdate",
           });
@@ -409,7 +409,7 @@ router.post("/dislikepost", fetchuser, (req, res) => {
         { $set: newpost },
         { new: true },
         (err1, result1) => {
-          if (Object.keys(err1).length)
+          if (err1 && Object.keys(err1).length)
             return res.send({
               error: "error in finding in findingbyIdandupdate",
             });
@@ -435,7 +435,7 @@ router.post("/removedislikepost", fetchuser, (req, res) => {
       { $set: newpost },
       { new: true },
       (err1, result1) => {
-        if (Object.keys(err1).length)
+        if (err1 && Object.keys(err1).length)
           return res.send({
             error: "error in finding in findingbyIdandupdate",
           });
@@ -452,7 +452,7 @@ router.post("/acceptrequest", (req, res) => {
   const userid = req.body.userid;
   const gredditid = req.body.gredditid;
   subgreddit.findById(gredditid, (err1, result1) => {
-    if (Object.keys(err1).length) return res.send({ error: "error1" });
+    if (err1 && Object.keys(err1).length) return res.send({ error: "error1" });
     else if (!result1) return res.send({ error: "no such greddit" });
     else {
       let newfollowers = result1.followers.filter((follower) => {
@@ -473,7 +473,7 @@ router.post("/acceptrequest", (req, res) => {
         { $set: newdata },
         { new: true },
         (err2, result2) => {
-          if (Object.keys(err2).length)
+          if (err2 && Object.keys(err2).length)
             return res.send({
               error: "error in finding in findingbyIdandupdate",
             });
@@ -481,7 +481,7 @@ router.post("/acceptrequest", (req, res) => {
             // console.log("cool")
             // return res.send(result1);
             User.findById({ _id: userid }, (err3, result3) => {
-              if (Object.keys(err3).length) return res.send({ error: "error2" });
+              if (err3 && Object.keys(err3).length) return res.send({ error: "error2" });
               else {
                 let newfollowers = result3.followinggreddits.filter(
                   (follower) => {
@@ -504,7 +504,7 @@ router.post("/acceptrequest", (req, res) => {
                   { $set: newdata },
                   { new: true },
                   (err4, result4) => {
-                    if (Object.keys(err4).length)
+                    if (err4 && Object.keys(err4).length)
                       return res.send({
                         error: "error in finding in findingbyIdandupdate",
                       });
@@ -526,7 +526,7 @@ router.post("/cancelrequest", (req, res) => {
   const userid = req.body.userid;
   const gredditid = req.body.gredditid;
   subgreddit.findById(gredditid, (err1, result1) => {
-    if (Object.keys(err1).length) return res.send({ error: "error1" });
+    if (err1 && Object.keys(err1).length) return res.send({ error: "error1" });
     else if (!result1) return res.send({ error: "no such greddit" });
     else {
       let newfollowers = result1.followers.filter((follower) => {
@@ -545,7 +545,7 @@ router.post("/cancelrequest", (req, res) => {
         { $set: newdata },
         { new: true },
         (err2, result2) => {
-          if (Object.keys(err2).length)
+          if (err2 && Object.keys(err2).length)
             return res.send({
               error: "error in finding in findingbyIdandupdate",
             });
@@ -553,7 +553,7 @@ router.post("/cancelrequest", (req, res) => {
             // console.log("cool")
             // return res.send(result1);
             User.findById({ _id: userid }, (err3, result3) => {
-              if (Object.keys(err3).length) return res.send({ error: "error2" });
+              if (err3 && Object.keys(err3).length) return res.send({ error: "error2" });
               else {
                 let newfollowers = result3.followinggreddits.filter(
                   (follower) => {
@@ -576,7 +576,7 @@ router.post("/cancelrequest", (req, res) => {
                   { $set: newdata },
                   { new: true },
                   (err4, result4) => {
-                    if (Object.keys(err4).length)
+                    if (err4 && Object.keys(err4).length)
                       return res.send({
                         error: "error in finding in findingbyIdandupdate",
                       });
@@ -598,7 +598,7 @@ router.post("/savepost", fetchuser, (req, res) => {
   const postid = req.body.postid;
   const userid = req.user.id;
   User.findById(userid, (err, result) => {
-    if (Object.keys(err).length) return res.send({ error: "error" });
+    if (err && Object.keys(err).length) return res.send({ error: "error" });
     else if (!result) return res.send({ error: "no such user" });
     if (result.savedposts.includes(postid)) {
       return res.send({ error: "already saved" });
@@ -612,7 +612,7 @@ router.post("/savepost", fetchuser, (req, res) => {
         { $set: newdata },
         { new: true },
         (err4, result4) => {
-          if (Object.keys(err4).length)
+          if (err4 && Object.keys(err4).length)
             return res.send({
               error: "error in finding in findingbyIdandupdate",
             });
@@ -628,7 +628,7 @@ router.post("/unsavepost", fetchuser, (req, res) => {
   const postid = req.body.postid;
   const userid = req.user.id;
   User.findById(userid, (err, result) => {
-    if (Object.keys(err).length) return res.send({ error: "error" });
+    if (err && Object.keys(err).length) return res.send({ error: "error" });
     else if (!result) return res.send({ error: "no such user" });
     if (!result.savedposts.includes(postid)) {
       return res.send({ error: "not saved yet" });
@@ -642,7 +642,7 @@ router.post("/unsavepost", fetchuser, (req, res) => {
         { $set: newdata },
         { new: true },
         (err4, result4) => {
-          if (Object.keys(err4).length)
+          if (err4 && Object.keys(err4).length)
             return res.send({
               error: "error in finding in findingbyIdandupdate",
             });
@@ -664,7 +664,7 @@ router.post("/followuser", fetchuser, (req, res) => {
       return res.send({ error: "following yourself !!! :)" });
     } else {
       User.findById({ _id: userid }, (err1, result1) => {
-        if (Object.keys(err1).length) return res.send({ error: "error" });
+        if (err1 && Object.keys(err1).length) return res.send({ error: "error" });
         else if (!result1) return res.send({ error: "error" });
         else {
           // console.log(result1)
@@ -681,13 +681,13 @@ router.post("/followuser", fetchuser, (req, res) => {
               { $set: newuser },
               { new: true },
               (err2, result2) => {
-                if (Object.keys(err2).length)
+                if (err2 && Object.keys(err2).length)
                   return res.send({
                     error: "error in finding in findingbyIdandupdate",
                   });
                 else {
                   User.findById({ _id: usertofollow }, (err3, result3) => {
-                    if (Object.keys(err3).length) return res.send({ error: "error" });
+                    if (err3 && Object.keys(err3).length) return res.send({ error: "error" });
                     else if (!result3) return res.send({ error: "error" });
                     else {
                       // console.log(result1)
@@ -701,7 +701,7 @@ router.post("/followuser", fetchuser, (req, res) => {
                         { $set: newuser },
                         { new: true },
                         (err4, result4) => {
-                          if (Object.keys(err4).length)
+                          if (err4 && Object.keys(err4).length)
                             return res.send({
                               error: "error in finding in findingbyIdandupdate",
                             });
@@ -727,7 +727,7 @@ router.post("/acceptrejecteduser", fetchuser, (req, res) => {
   const userid = req.body.userid;
   const gredditid = req.body.gredditid;
   subgreddit.findById(gredditid, (err1, result1) => {
-    if (Object.keys(err1).length) return res.send({ error: "error1" });
+    if (err1 && Object.keys(err1).length) return res.send({ error: "error1" });
     else if (!result1) return res.send({ error: "no such greddit" });
     else {
       let creationdate;
@@ -762,7 +762,7 @@ router.post("/acceptrejecteduser", fetchuser, (req, res) => {
           { $set: newdata },
           { new: true },
           (err2, result2) => {
-            if (err2)
+            if (err2 && Object.keys(err2).length)
               return res.send({
                 error: "error in finding in findingbyIdandupdate",
               });
@@ -770,7 +770,7 @@ router.post("/acceptrejecteduser", fetchuser, (req, res) => {
               // console.log("cool")
               // return res.send(result1);
               User.findById({ _id: userid }, (err3, result3) => {
-                if (Object.keys(err3).length) return res.send({ error: "error2" });
+                if ( err3 && Object.keys(err3).length) return res.send({ error: "error2" });
                 else {
                   let newfollowers = result3.followinggreddits.filter(
                     (follower) => {
@@ -793,7 +793,7 @@ router.post("/acceptrejecteduser", fetchuser, (req, res) => {
                     { $set: newdata },
                     { new: true },
                     (err4, result4) => {
-                      if (Object.keys(err4).length)
+                      if (err4 && Object.keys(err4).length)
                         return res.send({
                           error: "error in finding in findingbyIdandupdate",
                         });
