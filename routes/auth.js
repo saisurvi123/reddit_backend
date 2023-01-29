@@ -58,8 +58,6 @@ router.post(
     else {
       // creation of user
       User.findOne({ email: req.body.email }, (err, results) => {
-        if (err)
-          return res.send({ error: err});
         if (results) {
           return res.send({ error: "enetered email is already in use" });
         }
