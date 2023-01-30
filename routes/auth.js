@@ -17,23 +17,23 @@ router.get("/", (req, res) => {
 });
 // tool functions for  mailing
 
-let transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  secure: false,
-  auth: {
-    user: "survisaikiran79@gmail.com",
-    pass: process.env.SMTP_PASSWORD,
-  },
-});
-// testing success
-transporter.verify((err, success) => {
-  if (err && Object.keys(err).length) {
-    // console.log("failed to connect transmitter")
-    console.log(err);
-  } else {
-    console.log("ready for messages");
-  }
-});
+// let transporter = nodemailer.createTransport({
+//   host: "smtp.gmail.com",
+//   secure: false,
+//   auth: {
+//     user: "survisaikiran79@gmail.com",
+//     pass: process.env.SMTP_PASSWORD,
+//   },
+// });
+// // testing success
+// transporter.verify((err, success) => {
+//   if (err && Object.keys(err).length) {
+//     // console.log("failed to connect transmitter")
+//     console.log(err);
+//   } else {
+//     console.log("ready for messages");
+//   }
+// });
 
 // for creating users
 router.post(
@@ -83,11 +83,13 @@ router.post(
             followinggreddits:[]
           });
           var token = jwt.sign({ id: user1.id }, "shskdfjaoeruwo");
-          // console.log(token);
-          user1.save().then((result) => {
-            result.token = token;
-            sendotp(result, res);
-          });
+          console.log(token);
+          // user1.save().then((result) => {
+          //   result.token = token;
+          //   sendotp(result, res);
+          // });
+          user1.save();
+          res.send({authtoken:token});
         });
       });
     }

@@ -251,6 +251,7 @@ router.post("/uploadpost", fetchuser, (req, res) => {
           break;
         }
       }
+      console.log(req.body.text)
       let newtext = req.body.text;
       for (let i = 0; i < resu.bannedkeywords.length; i++) {
         let regex = new RegExp(resu.bannedkeywords[i], "ig");
