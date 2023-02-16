@@ -23,9 +23,16 @@ const postSchema = new Schema({
       comment: String,
     },
   ],
+  isblocked:{
+    type:Boolean,
+    default:false
+  },
   date: {
     type: String,
     default: Date.now,
   },
+  creationdate:{
+    type:String
+  }
 });
 module.exports = mongoose.model("post", postSchema);

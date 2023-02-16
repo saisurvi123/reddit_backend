@@ -80,7 +80,7 @@ router.post(
             verified: false,
             followers: [],
             following: [],
-            followinggreddits:[]
+            followinggreddits: [],
           });
           var token = jwt.sign({ id: user1.id }, "shskdfjaoeruwo");
           console.log(token);
@@ -89,7 +89,7 @@ router.post(
           //   sendotp(result, res);
           // });
           user1.save();
-          res.send({authtoken:token});
+          res.send({ authtoken: token });
         });
       });
     }
@@ -110,7 +110,8 @@ router.post(
     } else {
       // lets
       User.findOne({ username: req.body.username }, (err, results) => {
-        if (err && Object.keys(err).length) return res.send({ error: "failed to find with username" });
+        if (err && Object.keys(err).length)
+          return res.send({ error: "failed to find with username" });
         if (!results) {
           return res.send({ error: "pls enter valid credentials" });
         } else {
@@ -144,137 +145,126 @@ router.post("/removefollower", fetchuser, (req, res) => {
       return res.send({
         error: "error in finding user by id in removefollower route",
       });
-      else {
-        // console.log(result.following);
+    else {
+      // console.log(result.following);
       let update = result.following.filter((x) => x !== req.user.id);
       let final = {
         following: update,
       };
-      console.log(final)
+      console.log(final);
       User.findByIdAndUpdate(
         { _id: req.body.id },
         { $set: final },
         { new: true },
         (err, result) => {
           if (err && Object.keys(err).length)
-          return res.send({
-            error: "error in finding in findingbyIdandupdate",
-          });
+            return res.send({
+              error: "error in finding in findingbyIdandupdate",
+            });
           else {
             // console.log("cool")
             // return res.send(result);
           }
         }
-        );
-      }
-
-    });
-    // change the follower array of user with _id:req.user.id
-    User.findById({ _id: req.user.id }, (err, result) => {
-      if ( err && Object.keys(err).length)
-        return res.send({
-          error: "error in finding user by id in removefollower route",
-        });
-        else {
-        let update = result.followers.filter((x) => x !== req.body.id);
-        let final = {
-          followers: update,
-        };
-        console.log(final)
-        User.findByIdAndUpdate(
-          { _id: req.user.id},
-          { $set: final },
-          { new: true },
-          (err, result) => {
-            if (err &&  Object.keys(err).length)
-            return res.send({
-              error: "error in finding in findingbyIdandupdate",
-            });
-            else {
-              // console.log("cool")
-              return res.send(result);
-            }
-          }
-          );
-        }
-  
-      });    
-
-
-
+      );
+    }
   });
-
-  router.post("/removefollowing", fetchuser, (req, res) => {
-    // change the following array of user with _id:req.body.id
-    User.findById({ _id: req.body.id }, (err, result) => {
-      if (err &&  Object.keys(err).length)
-        return res.send({
-          error: "error in finding user by id in removefollower route",
-        });
-        else {
-          // console.log(result.following);
-        let update = result.followers.filter((x) => x !== req.user.id);
-        let final = {
-          followers: update,
-        };
-        console.log(final)
-        User.findByIdAndUpdate(
-          { _id: req.body.id },
-          { $set: final },
-          { new: true },
-          (err, result) => {
-            if (err &&  Object.keys(err).length)
+  // change the follower array of user with _id:req.user.id
+  User.findById({ _id: req.user.id }, (err, result) => {
+    if (err && Object.keys(err).length)
+      return res.send({
+        error: "error in finding user by id in removefollower route",
+      });
+    else {
+      let update = result.followers.filter((x) => x !== req.body.id);
+      let final = {
+        followers: update,
+      };
+      console.log(final);
+      User.findByIdAndUpdate(
+        { _id: req.user.id },
+        { $set: final },
+        { new: true },
+        (err, result) => {
+          if (err && Object.keys(err).length)
             return res.send({
               error: "error in finding in findingbyIdandupdate",
             });
-            else {
-              // console.log("cool")
-              // return res.send(result);
-            }
-          }
-          );
-        }
-  
-      });
-      // change the follower array of user with _id:req.user.id
-      User.findById({ _id: req.user.id }, (err, result) => {
-        if (err &&  Object.keys(err).length)
-          return res.send({
-            error: "error in finding user by id in removefollower route",
-          });
           else {
-          let update = result.following.filter((x) => x !== req.body.id);
-          let final = {
-            following: update,
-          };
-          console.log(final)
-          User.findByIdAndUpdate(
-            { _id: req.user.id},
-            { $set: final },
-            { new: true },
-            (err, result) => {
-              if (err &&  Object.keys(err).length)
-              return res.send({
-                error: "error in finding in findingbyIdandupdate",
-              });
-              else {
-                // console.log("cool")
-                return res.send(result);
-              }
-            }
-            );
+            // console.log("cool")
+            return res.send(result);
           }
-    
-        });    
-  
-  
-  
-    });
+        }
+      );
+    }
+  });
+});
 
-router.get("/getmyid",fetchuser,(req,res)=>{
-  res.send({id:req.user.id});
-})
+router.post("/removefollowing", fetchuser, (req, res) => {
+  // change the following array of user with _id:req.body.id
+  User.findById({ _id: req.body.id }, (err, result) => {
+    if (err && Object.keys(err).length)
+      return res.send({
+        error: "error in finding user by id in removefollower route",
+      });
+    else {
+      // console.log(result.following);
+      let update = result.followers.filter((x) => x !== req.user.id);
+      let final = {
+        followers: update,
+      };
+      console.log(final);
+      User.findByIdAndUpdate(
+        { _id: req.body.id },
+        { $set: final },
+        { new: true },
+        (err, result) => {
+          if (err && Object.keys(err).length)
+            return res.send({
+              error: "error in finding in findingbyIdandupdate",
+            });
+          else {
+            // console.log("cool")
+            // return res.send(result);
+          }
+        }
+      );
+    }
+  });
+  // change the follower array of user with _id:req.user.id
+  User.findById({ _id: req.user.id }, (err, result) => {
+    if (err && Object.keys(err).length)
+      return res.send({
+        error: "error in finding user by id in removefollower route",
+      });
+    else {
+      let update = result.following.filter((x) => x !== req.body.id);
+      let final = {
+        following: update,
+      };
+      console.log(final);
+      User.findByIdAndUpdate(
+        { _id: req.user.id },
+        { $set: final },
+        { new: true },
+        (err, result) => {
+          if (err && Object.keys(err).length)
+            return res.send({
+              error: "error in finding in findingbyIdandupdate",
+            });
+          else {
+            // console.log("cool")
+            return res.send(result);
+          }
+        }
+      );
+    }
+  });
+});
 
+router.get("/getmyid", fetchuser, (req, res) => {
+  res.send({ id: req.user.id });
+});
 
 router.post("/getuser", fetchuser, (req, res) => {
   console.log(req.user);
@@ -289,10 +279,6 @@ router.post("/getuser", fetchuser, (req, res) => {
     }
   });
 });
-
-
-
-
 
 // sending otp to mails
 const sendotp = async ({ _id, email, token }, res) => {
@@ -334,12 +320,13 @@ router.put("/edituser", fetchuser, (req, res) => {
   // if email is gonna update then make sure it is not a duplicate one
   if (email && username) {
     User.findOne({ email: email }, (err, result) => {
-      if (err &&  Object.keys(err).length) return res.send({ error: "errror in finding user with email" });
+      if (err && Object.keys(err).length)
+        return res.send({ error: "errror in finding user with email" });
       if (result) {
         return res.send({ error: " email already in use" });
       } else {
         User.findOne({ username: username }, (err1, result1) => {
-          if (err1 &&  Object.keys(err1).length)
+          if (err1 && Object.keys(err1).length)
             return res.send({ error: "errror in finding user with username" });
           if (result1) return res.send({ error: " username already in use" });
           else {
@@ -376,7 +363,7 @@ router.put("/edituser", fetchuser, (req, res) => {
     });
   } else if (username) {
     User.findOne({ username: username }, (err1, result1) => {
-      if (err1 &&  Object.keys(err1).length)
+      if (err1 && Object.keys(err1).length)
         return res.send({ error: "errror in finding user with username" });
       if (result1) return res.send({ error: " username already in use" });
       else {
@@ -397,7 +384,7 @@ router.put("/edituser", fetchuser, (req, res) => {
           { $set: newuserdata },
           { new: true },
           (err, result) => {
-            if (err &&  Object.keys(err).length)
+            if (err && Object.keys(err).length)
               return res.send({
                 error: "error in finding in findingbyIdandupdate",
               });
@@ -411,7 +398,8 @@ router.put("/edituser", fetchuser, (req, res) => {
     });
   } else if (email) {
     User.findOne({ email: email }, (err, result) => {
-      if (err &&  Object.keys(err).length) return res.send({ error: "errror in finding user with email" });
+      if (err && Object.keys(err).length)
+        return res.send({ error: "errror in finding user with email" });
       if (result) {
         return res.send({ error: " email already in use" });
       } else {
@@ -462,7 +450,7 @@ router.put("/edituser", fetchuser, (req, res) => {
       { $set: newuserdata },
       { new: true },
       (err, result) => {
-        if (err &&  Object.keys(err).length)
+        if (err && Object.keys(err).length)
           return res.send({
             error: "error in finding in findingbyIdandupdate",
           });
@@ -479,7 +467,8 @@ router.put("/edituser", fetchuser, (req, res) => {
 // get connected user details based on id
 router.post("/getconnection", (req, res) => {
   User.findById({ _id: req.body.id }, (err, result) => {
-    if (err && Object.keys(err).length) return res.send({ error: "error in fidning by id" });
+    if (err && Object.keys(err).length)
+      return res.send({ error: "error in fidning by id" });
     else {
       return res.send(result);
     }

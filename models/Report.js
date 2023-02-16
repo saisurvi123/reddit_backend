@@ -4,25 +4,31 @@ const { Schema } = mongoose;
 const reportSchema = new Schema({
   reportinguser:{
     type:String,
-    required:true
   },
   reporteduser:{
     type:String,
-    required:true,
-    unique:true
   },
   concern:{
     type:String,
-    required:true
   },
-  greditid:{
+  postid:{
     type:String,
-    required:true
+  },
+  gredditid:{
+    type:String,
   },
   date:{
     type:String,
      default:Date.now
   },
+  ignored:{
+    type:Boolean,
+    default:false
+  },
+  isblocked:{
+    type:Boolean,
+    default:false
+  }
   
 });
 module.exports=mongoose.model('report',reportSchema);

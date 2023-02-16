@@ -22,6 +22,14 @@ const subgredditSchema = new Schema({
     {
       id: String,
       status: String,
+      accepteddate: {
+        type: String,
+        default: "NA",
+      },
+      exiteddate: {
+        type: String,
+        default: "NA",
+      },
       date: {
         type: String,
         default: Date.now,
@@ -40,5 +48,18 @@ const subgredditSchema = new Schema({
     type: String,
     default: Date.now,
   },
+  creationdate: {
+    type: String,
+  },
+  visitors: [
+    {
+      date: {
+        type: String,
+        default: Date.now,
+      },
+    },
+  ],
+  reportcreations: [String],
+  reportdeletions: [String],
 });
 module.exports = mongoose.model("subgreddit", subgredditSchema);
