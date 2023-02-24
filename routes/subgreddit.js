@@ -1129,7 +1129,9 @@ router.post("/usergrowth", (req, res) => {
             Number(results.followers[i].accepteddate)
           );
           let rejecteddate = new Date(Number(results.followers[i].exiteddate));
-          if (accepteddate <= currentdate && currentdate <= rejecteddate) {
+          if ((accepteddate <= currentdate||
+            accepteddate.toDateString() == currentdate.toDateString()) && (currentdate <= rejecteddate ||
+            rejecteddate.toDateString() == currentdate.toDateString())){
             cnt++;
           }
         } else if (
@@ -1139,7 +1141,8 @@ router.post("/usergrowth", (req, res) => {
           let accepteddate = new Date(
             Number(results.followers[i].accepteddate)
           );
-          if (accepteddate <= currentdate) {
+          if (accepteddate <= currentdate ||
+            accepteddate.toDateString() == currentdate.toDateString()) {
             cnt++;
           }
         }
@@ -1181,7 +1184,8 @@ router.post("/postsgrowth", (req, res) => {
         let cnt = 0;
         for (let i = 0; i < results.length; i++) {
           let creationdate = new Date(Number(results[i].creationdate));
-          if (creationdate <= currentdate) {
+          if (creationdate <= currentdate ||
+            creationdate.toDateString() == currentdate.toDateString()) {
             cnt++;
           }
         }
@@ -1220,7 +1224,8 @@ router.post("/visitorsgrowth", (req, res) => {
       let cnt = 0;
       for (let i = 0; i < results.visitors.length; i++) {
         let creationdate = new Date(Number(results.visitors[i].date));
-        if (creationdate <= currentdate) {
+        if (creationdate <= currentdate ||
+          creationdate.toDateString() == currentdate.toDateString()) {
           cnt++;
         }
       }
@@ -1240,6 +1245,7 @@ router.post("/visitorsgrowth", (req, res) => {
   });
 });
 
+
 router.post("/reportedpostsgrowth", (req, res) => {
   const gredditid = req.body.gredditid;
   subgreddit.findById(gredditid, (err, results) => {
@@ -1256,15 +1262,21 @@ router.post("/reportedpostsgrowth", (req, res) => {
     ) {
       let cnt1 = 0;
       for (let i = 0; i < results.reportcreations.length; i++) {
-        let creationdate = new Date(Number(results.reportcreations[i].date));
-        if (creationdate <= currentdate) {
+        let creationdate = new Date(Number(results.reportcreations[i]));
+        console.log("creation")
+        console.log(creationdate)
+        console.log("deletion")
+        console.log(currentdate)
+        if (creationdate <= currentdate ||
+          creationdate.toDateString() == currentdate.toDateString()) {
           cnt1++;
         }
       }
       let cnt2 = 0;
       for (let i = 0; i < results.reportdeletions.length; i++) {
-        let creationdate = new Date(Number(results.reportdeletions[i].date));
-        if (creationdate <= currentdate) {
+        let creationdate = new Date(Number(results.reportdeletions[i]));
+        if (creationdate <= currentdate ||
+          creationdate.toDateString() == currentdate.toDateString()) {
           cnt2++;
         }
       }
